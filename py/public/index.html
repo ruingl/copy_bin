@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CopyBin</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    >
+</head>
+<body>
+    <header class="container">
+        <hgroup>
+            <h1>CopyBin</h1>
+            <p>Share bin's, or get bin's!</p>
+        </hgroup>
+    </header>
+
+    <main class="container">
+        <input
+            id="bin-input"
+            placeholder="Add your bin here!"
+        />
+
+        <p id="result"></p>
+
+        <button id="bin-submit">Submit!</button>
+    </main>
+
+    <script>
+        const $ = (q) => document.querySelector(q);
+        const input = $("#bin-input");
+        const button = $("#bin-submit");
+
+        button.addEventListener("click", async () => {
+            if (input.value.trim() == "") {
+                return alert("[-] Please provide a bin!");
+            }
+
+            const res = await fetch("/bin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ bin: input.value })
+            });
+
+            if (!res.ok) {
+                return alert("[-] Cant create bin!")
+            }
+
+            const data = await res.json();
+            location.href = `/bin/${data.id}`
+        });
+    </script>
+</body>
+</html>
